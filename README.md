@@ -45,3 +45,13 @@ kubectl get nodes -o wide
   --conf spark.kubernetes.trust.certificates=true \
   --conf spark.kubernetes.authenticate.oauthToken="$TOKEN"
 ```
+
+## Other NS
+```bash
+--conf spark.kubernetes.namespace=K8S_NS \
+```
+
+```bash
+kubectl apply -n K8S_NS -f spark-token.yaml
+TOKEN=$(kubectl get secret -n K8S_NS spark-user-token -o jsonpath='{.data.token}' | base64 --decode)
+```
