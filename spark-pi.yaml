@@ -1,0 +1,28 @@
+# spark-pi.yaml
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: spark-pi-example
+  namespace: default # O el namespace donde quieras ejecutar tu aplicación
+spec:
+  type: Scala
+  mode: cluster
+  image: "apache/spark:latest" # Imagen oficial de Spark
+  imagePullPolicy: IfNotPresent
+  mainClass: org.apache.spark.examples.SparkPi
+  mainApplicationFile: "local:///opt/spark/examples/jars/spark-examples.jar" # Simplificamos el nombre del JAR
+  sparkConf:
+    "spark.driver.allowMultipleContexts": "true"
+  driver:
+    cores: 1
+    coreLimit: "1200m"
+    memory: "512m"
+    labels:
+      version: 3.5.1
+    serviceAccount: spark # Usaremos la cuenta de servicio 'spark' (ver nota)
+  executor:
+    cores: 1
+    instances: 1 # Un solo executor para esta prueba
+    memory: "512m"
+    labels:
+      version: 3.5.1
