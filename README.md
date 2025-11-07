@@ -1,4 +1,4 @@
-# Spark on K(S
+# Spark on K8S
 
 # Operator
 helm repo add spark-operator https://kubeflow.github.io/spark-operator
@@ -17,6 +17,21 @@ kubectl create rolebinding spark-role-default --clusterrole=edit --serviceaccoun
 
 # Test
 kubectl apply -f spark-pi.yaml
+kubectl logs spark-pi-example-driver
 
 # Out the k8s
+
 kubectl apply -f spark-token.yaml
+
+TOKEN=$(kubectl get secret spark-user-token -o jsonpath='{.data.token}' | base64 --decode)
+
+
+./bin/spark-shell  \
+  --master k8s://https://192.168.122.146:6443 \
+  --deploy-mode client \
+  --conf spark.kubernetes.container.image=apache/spark:latest \
+  --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+  --conf spark.kubernetes.executor.deleteOnTermination=true \
+  --conf spark.kubernetes.trust.certificates=true \
+  --conf spark.kubernetes.authenticate.oauthToken="$TOKEN"
+
