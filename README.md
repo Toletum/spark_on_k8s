@@ -31,8 +31,9 @@ kubectl logs spark-pi-example-driver
 ```bash
 kubectl apply -f spark-token.yaml
 TOKEN=$(kubectl get secret spark-user-token -o jsonpath='{.data.token}' | base64 --decode)
-```
 
+kubectl get nodes -o wide
+```
 
 ```bash
 ./bin/spark-shell  \
